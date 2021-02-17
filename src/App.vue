@@ -2,7 +2,10 @@
   <div class="page">
     <div class="wrapper">
       <div class="display">
-        {{ operatorSign ? secondArgument : firstArgument || "0" }}
+        <span v-if="$store.state.operatorSign">
+          {{ $store.state.secondArgument }}
+        </span>
+        <span v-else> {{ $store.state.firstArgument || "0" }} </span>
       </div>
       <div @click="clear" class="btn">Clr</div>
       <div @click="changeSign" class="btn">+/-</div>
@@ -28,102 +31,29 @@
 </template>
 
 <script>
-// import Button from "./components/Button.vue";
-
 export default {
   name: "App",
-  data: () => {
-    return {
-      firstArgument: "",
-      secondArgument: "",
-      operatorSign: "",
-      signClicked: false,
-    };
-  },
   methods: {
-    clear() {
-      this.firstArgument = "";
-      this.operatorSign = "";
-      this.secondArgument = "";
-      this.signClicked = false;
-    },
     changeSign() {
-      if (this.signClicked) {
-        if (this.secondArgument.charAt(0) === "-") {
-          this.secondArgument = this.secondArgument.slice(1);
-        } else {
-          this.secondArgument = `-${this.secondArgument}`;
-        }
-      } else {
-        if (this.firstArgument.charAt(0) === "-") {
-          this.firstArgument = this.firstArgument.slice(1);
-        } else {
-          this.firstArgument = `-${this.firstArgument}`;
-        }
-      }
-    },
-    percent() {
-      this.firstArgument = `${parseFloat(this.firstArgument) / 100}`;
-    },
-    numberHandler(number) {
-      this.signClicked
-        ? (this.secondArgument += number)
-        : (this.firstArgument += number);
-    },
-    equal() {
-      if (this.secondArgument.trim()) {
-        switch (this.operatorSign) {
-          case "+":
-            this.firstArgument = `${
-              Number(this.firstArgument) + Number(this.secondArgument)
-            }`;
-            break;
-          case "-":
-            this.firstArgument = `${
-              Number(this.firstArgument) - Number(this.secondArgument)
-            }`;
-            break;
-          case "*":
-            this.firstArgument = `${
-              Number(this.firstArgument) * Number(this.secondArgument)
-            }`;
-            break;
-          case "/":
-            this.firstArgument = `${
-              Number(this.firstArgument) / Number(this.secondArgument)
-            }`;
-            break;
-        }
-        this.secondArgument = "";
-        this.operatorSign = "";
-        this.signClicked = false;
-      } else {
-        alert("Please input second argument");
-      }
+      this.$store.commit("changeSign");
     },
     handleDot() {
-      if (!this.signClicked && this.firstArgument.indexOf(".") === -1) {
-        this.numberHandler(".");
-      } else if (this.signClicked && this.secondArgument.indexOf(".") === -1) {
-        this.numberHandler(".");
-      }
+      this.$store.commit("handleDot");
+    },
+    clear() {
+      this.$store.commit("clear");
+    },
+    percent() {
+      this.$store.commit("percent");
+    },
+    numberHandler(number) {
+      this.$store.commit("numberHandler", { number: number });
+    },
+    equal() {
+      this.$store.commit("equal");
     },
     operator(operatorChar) {
-      switch (operatorChar) {
-        case "/":
-          this.operatorSign = "/";
-          break;
-        case "+":
-          this.operatorSign = "+";
-          break;
-        case "-":
-          this.operatorSign = "-";
-          break;
-        case "*":
-          this.operatorSign = "*";
-          break;
-      }
-      this.signClicked = true;
+      this.$store.commit("operator", { operatorChar });
     },
   },
 };

@@ -5,14 +5,24 @@ export default createStore({
     firstArgument: '',
     secondArgument: '',
     operatorSign: '',
-    signClicked: false
+    signClicked: false,
+    lastExpression: ''
   },
   mutations: {
-    clear() {
-      this.state.firstArgument = '';
-      this.state.secondArgument = '';
-      this.state.operatorSign = '';
-      this.state.signClicked = false;
+    clear(state) {
+      state.firstArgument = '';
+      state.secondArgument = '';
+      state.operatorSign = '';
+      state.signClicked = false;
+      state.lastExpression = ''
+    },
+    clearLast(state) {
+      if (state.signClicked) {
+        state.secondArgument = state.secondArgument.slice(0, -1);
+      }
+      else {
+        state.firstArgument = state.firstArgument.slice(0, -1);
+      }
     },
     numberHandler(state, payload) {
       const { number } = payload;
@@ -44,6 +54,7 @@ export default createStore({
     },
     equal(state) {
       if (state.secondArgument.trim()) {
+        state.lastExpression = state.firstArgument + state.operatorSign + state.secondArgument;
         switch (state.operatorSign) {
           case "+":
             state.firstArgument = `${Number(state.firstArgument) + Number(state.secondArgument)
@@ -62,6 +73,7 @@ export default createStore({
               }`;
             break;
         }
+
         state.secondArgument = "";
         state.operatorSign = "";
         state.signClicked = false;

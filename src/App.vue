@@ -9,9 +9,14 @@
           {{ $store.state.firstArgument }}
         </span>
         <span v-else> 0 </span>
+        <span class="expression">
+          {{ $store.state.lastExpression }}
+        </span>
       </div>
       <div @click="$store.commit('clear')" class="btn">Clr</div>
-      <div @click="$store.commit('changeSign')" class="btn">+/-</div>
+      <div @click="$store.commit('clearLast')" class="btn">
+        <img class="backspace" src="./assets/5721512301553858076.svg" />
+      </div>
       <div @click="$store.commit('percent')" class="btn">%</div>
       <div @click="operator('/')" class="btn operator">/</div>
       <div @click="numberHandler(7)" class="btn">7</div>
@@ -26,8 +31,9 @@
       <div @click="numberHandler(2)" class="btn">2</div>
       <div @click="numberHandler(3)" class="btn">3</div>
       <div @click="operator('+')" class="btn operator">+</div>
-      <div @click="numberHandler(0)" class="btn zero">0</div>
       <div @click="numberHandler('.')" class="btn">.</div>
+      <div @click="numberHandler(0)" class="btn">0</div>
+      <div @click="$store.commit('changeSign')" class="btn">+/-</div>
       <div @click="$store.commit('equal')" class="btn operator">=</div>
     </div>
   </div>
@@ -107,5 +113,18 @@ export default {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  position: relative;
+}
+.expression {
+  position: absolute;
+  top: 5px;
+  right: 20px;
+  font-size: 14px;
+  color: #5a7bbe;
+}
+
+.backspace {
+  width: 40%;
+  height: 50%;
 }
 </style>

@@ -5,11 +5,14 @@
         <span v-if="$store.state.operatorSign">
           {{ $store.state.secondArgument }}
         </span>
-        <span v-else> {{ $store.state.firstArgument || "0" }} </span>
+        <span v-else-if="$store.state.firstArgument.length > 0">
+          {{ $store.state.firstArgument }}
+        </span>
+        <span v-else> 0 </span>
       </div>
-      <div @click="clear" class="btn">Clr</div>
-      <div @click="changeSign" class="btn">+/-</div>
-      <div @click="percent" class="btn">%</div>
+      <div @click="$store.commit('clear')" class="btn">Clr</div>
+      <div @click="$store.commit('changeSign')" class="btn">+/-</div>
+      <div @click="$store.commit('percent')" class="btn">%</div>
       <div @click="operator('/')" class="btn operator">/</div>
       <div @click="numberHandler(7)" class="btn">7</div>
       <div @click="numberHandler(8)" class="btn">8</div>
@@ -24,8 +27,8 @@
       <div @click="numberHandler(3)" class="btn">3</div>
       <div @click="operator('+')" class="btn operator">+</div>
       <div @click="numberHandler(0)" class="btn zero">0</div>
-      <div @click="handleDot" class="btn">.</div>
-      <div @click="equal" class="btn operator">=</div>
+      <div @click="numberHandler('.')" class="btn">.</div>
+      <div @click="$store.commit('equal')" class="btn operator">=</div>
     </div>
   </div>
 </template>
@@ -34,23 +37,8 @@
 export default {
   name: "App",
   methods: {
-    changeSign() {
-      this.$store.commit("changeSign");
-    },
-    handleDot() {
-      this.$store.commit("handleDot");
-    },
-    clear() {
-      this.$store.commit("clear");
-    },
-    percent() {
-      this.$store.commit("percent");
-    },
     numberHandler(number) {
       this.$store.commit("numberHandler", { number: number });
-    },
-    equal() {
-      this.$store.commit("equal");
     },
     operator(operatorChar) {
       this.$store.commit("operator", { operatorChar });
